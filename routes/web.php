@@ -24,4 +24,7 @@ Route::get('/admin', function(){
 });
 
 //---MXV add routes from exercise
-Route::resource('admin/users', 'AdminUsersController');
+Route::name('admin.')->group(function(){
+    Route::resource('admin/users', 'AdminUsersController');
+});
+

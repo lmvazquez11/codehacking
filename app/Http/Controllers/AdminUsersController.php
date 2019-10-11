@@ -6,6 +6,7 @@ use App\Http\Requests\UsersRequest;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use App\Photo;
 
 
 class AdminUsersController extends Controller
@@ -46,9 +47,34 @@ class AdminUsersController extends Controller
     public function store(UsersRequest $request)
     {
         //To create the record
-        User::create($request->all());
+        //User::create($request->all());
+
+
+        $input = $request->all();
+
+        if($file = $request->file('photo_id')){
+            $name = time() . $file->getClientOriginalName();
+
+            //---MXV move file to images folder, if does not exist the folder is created
+            $file->move('images',$name);
+
+            $photo = Photo::create(['file' => $name]);
+
+            $input['photo_id'] = $photo->id;
+        }
+        //---if there is no image,then...
+        //---encrypt pass
+        $input['password'] = bcrypt($request->password);
+        User::create($input);
+
+        //---verify if exists
+        /* if($request->file('photo_id')){
+            return "photo exists";
+        } */
+
         //---MXV return data, receive all data to store
-        return redirect('/admin/users');
+        //return redirect('/admin/users');
+
         //---for debug process only
         //return $request->all();
 

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UsersRequest;
 use Illuminate\Http\Request;
+use App\User;
+use App\Role;
+
 
 class AdminUsersController extends Controller
 {
@@ -13,8 +17,11 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
+
+        $users = User::all();
+
         //---MXV - Return view for admin
-        return view('admin.users.index');
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -24,9 +31,10 @@ class AdminUsersController extends Controller
      */
     public function create()
     {
-        //
+        //---MXV Instead of lists we use pluck for the lists of roles
+        $roles = Role::pluck('name','id')->all();
 
-        return view('admin.users.create');
+        return view('admin.users.create', compact('roles'));
     }
 
     /**
@@ -35,9 +43,15 @@ class AdminUsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UsersRequest $request)
     {
-        //
+        //To create the record
+        User::create($request->all());
+        //---MXV return data, receive all data to store
+        return redirect('/admin/users');
+        //---for debug process only
+        //return $request->all();
+
     }
 
     /**

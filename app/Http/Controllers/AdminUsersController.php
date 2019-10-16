@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UsersRequest;
+use App\Http\Requests\UsersEditRequest;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use App\Photo;
-
 
 class AdminUsersController extends Controller
 {
@@ -49,8 +49,13 @@ class AdminUsersController extends Controller
         //To create the record
         //User::create($request->all());
 
-
-        $input = $request->all();
+        if(trim($request->password) == ''){
+            $input = $request->except('password');
+        } else {
+            $input = $request->all();
+            //---Crypt password
+            $input['password'] = bcrypt($request->password);
+        }
 
         if($file = $request->file('photo_id')){
             $name = time() . $file->getClientOriginalName();
@@ -73,11 +78,10 @@ class AdminUsersController extends Controller
         } */
 
         //---MXV return data, receive all data to store
-        //return redirect('/admin/users');
+        return redirect('/admin/users');
 
         //---for debug process only
         //return $request->all();
-
     }
 
     /**
@@ -102,7 +106,11 @@ class AdminUsersController extends Controller
     public function edit($id)
     {
         //
-        return view('admin.users.edit');
+        //---Find user
+        $user = User::findOrFail($id);
+        //---Pass role, use pluck to retrieve data instead of list
+        $roles = Role::pluck('name', 'id')->all();
+        return view('admin.users.edit',compact('user','roles'));
     }
 
     /**
@@ -112,9 +120,37 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    //---MXV, we added UsersRequest to properly work the update
+    public function update(UsersEditRequest $request, $id)
     {
-        //
+        //---Get User
+        $user = User::findOrFail($id);
+
+        //---Check if the password is empty, otherwise it updates
+        if(trim($request->password) == ''){
+            $input = $request->except('password');
+        } else {
+            $input = $request->all();
+            //---Crypt password
+            $input['password'] = bcrypt($request->password);
+        }
+
+        //---Check for images to edit
+        if($file = $request->file('photo_id')){
+            $name = time() . $file->getClientOriginalName();
+
+            $file->move('images', $name);
+
+            //---Create a photo
+            $photo = Photo::create(['file' => $name]);
+            $input['photo_id'] = $photo->id;
+        }
+
+        //---Just update
+        $user->update($input);
+
+        return redirect('/admin/users');
+
     }
 
     /**

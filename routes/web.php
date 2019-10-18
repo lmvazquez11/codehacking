@@ -23,8 +23,15 @@ Route::get('/admin', function(){
     return view('admin.index');
 });
 
+//---MXV, group to use middleware
+/* Route::group(['middleware' => 'admin'], function(){
+    Route::resource('admin/users', 'AdminUsersController');
+}); */
+
 //---MXV add routes from exercise
 Route::name('admin.')->group(function(){
     Route::resource('admin/users', 'AdminUsersController');
 });
+
+Route::resource('admin/posts','AdminPostsController');
 

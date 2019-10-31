@@ -28,6 +28,7 @@ Route::get('/admin', function(){
     Route::resource('admin/users', 'AdminUsersController');
 }); */
 
+//---MXV: Code above is the good one, workaround below
 //---MXV add routes from exercise
 Route::name('admin.')->group(function(){
     Route::resource('admin/users', 'AdminUsersController');

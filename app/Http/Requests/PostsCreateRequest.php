@@ -25,10 +25,10 @@ class PostsCreateRequest extends FormRequest
     {
         return [
             //---MXV, Validations
-            'category_id' => 'required',
-            'photo_id' => 'required',
-            'title' => 'required',
-            'body' => 'required'
+            // 'title' => 'required',
+            // 'category_id' => 'required',
+            // 'photo_id' => 'required',
+            // 'body' => 'required'
         ];
     }
 }

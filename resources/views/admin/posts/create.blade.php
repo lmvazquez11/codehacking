@@ -5,7 +5,7 @@
   <h1>Create posts</h1>
   <div class="row">
 
-  {!! Form::open(['method' => 'POST', 'action' => 'AdminPostsController@store', 'files' => true]) !!}
+  {!! Form::open(['method' => 'POST', 'action' => 'AdminPostsController@update', 'files' => true]) !!}
 
   <div class="form-group">
     {!! Form::label('title', 'Title:') !!}
